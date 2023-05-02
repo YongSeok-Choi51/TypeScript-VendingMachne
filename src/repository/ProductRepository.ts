@@ -1,23 +1,23 @@
 import { PoolConnection } from 'mysql2/promise';
-import { ProductEntity } from '../entity/product/Product';
+import { Product } from '../entity/product/Product';
 import { PionRepository } from './PionRepository';
 
 
-export class ProductRepository extends PionRepository<ProductEntity> {
+export class ProductRepository extends PionRepository<Product> {
 
     constructor() {
         super();
     }
 
-    save(entity: ProductEntity, conn: PoolConnection): Promise<ProductEntity> {
+    save(entity: Product, conn: PoolConnection): Promise<Product> {
         throw new Error('Method not implemented.');
     }
 
-    saveAll(entityList: ProductEntity[], conn: PoolConnection): Promise<number> {
+    saveAll(entityList: Product[], conn: PoolConnection): Promise<number> {
         throw new Error('Method not implemented.');
     }
 
-    async findById(id: number, conn: PoolConnection): Promise<ProductEntity> {
+    async findById(id: number, conn: PoolConnection): Promise<Product> {
         const selectQuery = `
             SELECT
                 p.id,
@@ -28,7 +28,7 @@ export class ProductRepository extends PionRepository<ProductEntity> {
         `;
 
         const [rows, fields] = await conn.query({ sql: selectQuery }, [id]);
-        return rows && (rows as Array<ProductEntity>)[0];
+        return rows && (rows as Array<Product>)[0];
     }
 
 
@@ -41,10 +41,10 @@ export class ProductRepository extends PionRepository<ProductEntity> {
             FROM pixar.product p
         `;
         const [rows, fields] = await conn.query({ sql: selectQuery });
-        return rows && (rows as Array<ProductEntity>).map(e => e);
+        return rows && (rows as Array<Product>).map(e => e);
     }
 
-    updateById(id: number, valueList: ProductEntity[], conn: PoolConnection): Promise<ProductEntity[]> {
+    updateById(id: number, valueList: Product[], conn: PoolConnection): Promise<Product[]> {
         throw new Error('Method not implemented.');
     }
 

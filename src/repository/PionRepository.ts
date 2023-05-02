@@ -19,26 +19,6 @@ export abstract class PionRepository<Entity> {
 
     constructor() { }
 
-    async transactionTemplate(func: (id?: number, valueList?: Array<Entity>) => Promise<Entity> | Promise<Array<Entity>> | Promise<number> | undefined) {
-        const connection = await CONNECTION_POOL.getConnection();
-        try {
-            connection.beginTransaction();
-            const result = await func();
-            connection.commit();
-            return result;
-        } catch (err) {
-            console.log('err: ', err);
-            await connection.rollback();
-        } finally {
-            try {
-                connection.release();
-
-            } catch (err) {
-
-            }
-        }
-    }
-
     abstract save(entity: Entity, conn: PoolConnection): Promise<Entity>;
     abstract saveAll(entityList: Array<Entity>, conn: PoolConnection): Promise<number>;
     abstract findById(id: number, conn: PoolConnection): Promise<Entity | Entity[]>;

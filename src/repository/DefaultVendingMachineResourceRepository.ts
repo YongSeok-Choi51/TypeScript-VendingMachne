@@ -1,8 +1,6 @@
 import { PoolConnection } from 'mysql2/promise';
-import { DefVMResource } from '../entity/machine/VendingMachine';
-import { PionRepository } from './PionRepository';
-import { ProductResource } from '../entity/product/ProductResource';
 import { DefaultVendingMachineResource } from '../entity/machine/DefaultVendingMachineResource';
+import { PionRepository } from './PionRepository';
 
 
 export class DefaultVendingMachineResourceRepository extends PionRepository<DefaultVendingMachineResource> {

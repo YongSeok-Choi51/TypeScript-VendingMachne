@@ -39,16 +39,14 @@ export class OrderRepository extends PionRepository<Order>{
         ]);
 
         const affectedRows = (rows as ResultSetHeader).affectedRows;
+
         if (affectedRows === 0) {
             throw new Error("order insert error");
         }
 
         const insertId = (rows as ResultSetHeader).insertId;
-
         const [selectRows, _] = await conn.query({ sql: selectQuery }, [insertId]);
-        console.log("order entity", selectRows);
         return selectRows && (selectRows as Array<Order>)[0];
-
     }
 
     saveAll(entityList: Order[], conn: PoolConnection): Promise<number> {

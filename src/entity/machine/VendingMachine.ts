@@ -1,17 +1,12 @@
-import { ProductEntity } from '../product/Product';
+import { Product } from '../product/Product';
 import { VendingMachineResource } from './VendingMachineResource';
-
-export interface DefVMResource {
-    resourceId: number;
-    amount: number;
-}
 
 export class VendingMachine {
 
     id: number;
     name: string;
     vmResource: Array<VendingMachineResource>;
-    menuList: Array<ProductEntity>;
+    menuList: Array<Product>;
 
     constructor(id: number, name: string) {
         this.id = id;
@@ -26,7 +21,7 @@ export class VendingMachine {
         this.vmResource = vmResource;
     }
 
-    set setMenuList(menuList: Array<ProductEntity>) {
+    set setMenuList(menuList: Array<Product>) {
         if (menuList.length === 0) {
             console.log("invalid menuList");
             return;

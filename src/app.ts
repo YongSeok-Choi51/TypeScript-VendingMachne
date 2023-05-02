@@ -5,7 +5,6 @@ import { CONNECTION_POOL } from './repository/PionRepository';
 import { VendingMachineService } from './service/VendingMachineService';
 
 
-
 export interface ProductOrderInput {
     productId: number;
     vendingMachineId: number;
@@ -13,8 +12,6 @@ export interface ProductOrderInput {
     price: number;
     userId: number;
 }
-
-
 
 const app = express();
 const port = 3000;
@@ -28,11 +25,7 @@ const getTransaction = async () => {
     return conn;
 };
 
-app.get("/menu", (req, res) => {
-
-});
-
-app.put("/vm/:id", async (req, res) => {
+app.post("/vm/:id", async (req, res) => {
     const conn = await getTransaction();
     try {
         const vmId = parseInt(req.params.id);

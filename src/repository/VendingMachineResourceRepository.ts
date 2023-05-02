@@ -1,7 +1,6 @@
 import { PoolConnection, ResultSetHeader } from 'mysql2/promise';
 import { VendingMachineResource } from '../entity/machine/VendingMachineResource';
 import { PionRepository } from './PionRepository';
-import { Product, ProductEntity } from '../entity/product/Product';
 
 
 export class VendingMachineResourceRepository extends PionRepository<VendingMachineResource> {
@@ -77,7 +76,9 @@ export class VendingMachineResourceRepository extends PionRepository<VendingMach
         return (rows as ResultSetHeader).affectedRows!;
     }
 
-    // 특정 자판기가 가지는 자원중에서, 제품을 제작하는데 부족한 자원이 하나라도 있다면, product_id 반환
+    // 특정 자판기가 가지는 자원중에서, 제품을 제작하는데 부족한 자원이 하나라도 있다면, productId 반환
+    // 해당 productId를 서버 어플리케이션에서 제품 전체목록중에 배제하는 후처리.
+    // O(n) -> O(1)복잡도로 개선 
     async findUnAvailableProductsByVmId(vmId: number, conn: PoolConnection) {
         const query = `
             SELECT

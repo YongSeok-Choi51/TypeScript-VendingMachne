@@ -12,11 +12,12 @@ export class ProductResourceRepository extends PionRepository<ProductResource> {
     save(entity: ProductResource, conn: PoolConnection): Promise<ProductResource> {
         throw new Error('Method not implemented.');
     }
+
     saveAll(entityList: ProductResource[], conn: PoolConnection): Promise<number> {
         throw new Error('Method not implemented.');
     }
 
-    async findById(id: number, conn: PoolConnection): Promise<ProductResource | ProductResource[]> {
+    async findById(id: number, conn: PoolConnection) {
         const selectProductResourceQuery = `
         SELECT
             r.product_id as productId,
