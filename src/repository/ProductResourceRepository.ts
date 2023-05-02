@@ -1,30 +1,43 @@
 
-import { ProductResourceEntity } from '../entity/product/ProductResource';
+import { PoolConnection } from 'mysql2/promise';
+import { ProductResource } from '../entity/product/ProductResource';
 import { PionRepository } from './PionRepository';
 
-export class ProductResourceRepository extends PionRepository {
+export class ProductResourceRepository extends PionRepository<ProductResource> {
+
     constructor() {
         super();
     }
 
-    createTemplate(query: string) {
+    save(entity: ProductResource, conn: PoolConnection): Promise<ProductResource> {
+        throw new Error('Method not implemented.');
+    }
+    saveAll(entityList: ProductResource[], conn: PoolConnection): Promise<number> {
         throw new Error('Method not implemented.');
     }
 
-    async readTemplate(productId: number) {
+    async findById(id: number, conn: PoolConnection): Promise<ProductResource | ProductResource[]> {
         const selectProductResourceQuery = `
-            SELECT
-                r.product_id as productId,
-                r.resource_id as resourceId,
-                r.amount
-            FROM pixar.product_resource r
-            WHERE r.product_id=?
-        `;
-        const [rows, field] = await this._connection.query({ sql: selectProductResourceQuery }, [productId]);
-        return rows && (rows as Array<ProductResourceEntity>).map(e => e);
+        SELECT
+            r.product_id as productId,
+            r.resource_id as resourceId,
+            r.amount
+        FROM pixar.product_resource r
+        WHERE r.product_id=?
+    `;
+        const [rows, field] = await conn.query({ sql: selectProductResourceQuery }, [id]);
+        return rows && (rows as Array<ProductResource>).map(e => e);
     }
 
-    updateTemplate(query: string) {
+    findAll(conn: PoolConnection): Promise<ProductResource[]> {
+        throw new Error('Method not implemented.');
+
+    }
+
+    updateById(id: number, valueList: ProductResource[], conn: PoolConnection): Promise<ProductResource[]> {
+        throw new Error('Method not implemented.');
+    }
+    deleteById(id: number, conn: PoolConnection): Promise<number> {
         throw new Error('Method not implemented.');
     }
 }

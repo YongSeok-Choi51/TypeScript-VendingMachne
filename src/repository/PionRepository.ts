@@ -1,4 +1,5 @@
 import * as mysql from "mysql2/promise";
+import { PoolConnection } from 'mysql2/promise';
 
 
 
@@ -15,33 +16,9 @@ export const CONNECTION_POOL: mysql.Pool = mysql.createPool({
 
 export abstract class PionRepository<Entity> {
 
-    // _connection: mysql.Connection;
 
-    constructor() {
-        // this.initConnection();
-    }
+    constructor() { }
 
-    // async initConnection() {
-    //     this._connection = await mysql.createConnection({
-    //         host: "localhost",
-    //         user: 'root',
-    //         password: '',
-    //         database: 'pixar'
-    //     });
-    // };
-
-
-    //함수를 전달받아서 
-
-    // findById
-    // findAll
-    // updateById
-    // deleteById
-    // save()
-
-
-    // 모든애들이 기본적으로 가지는, 애들을 명확하게 구현 
-    // 내가 만든 템플릿 내부의 동작은 이런 기본적인것들로 구성돼서 커스텀하게 동작하는 것들을 만들어야 한다. (서비스 레이어에서)
     async transactionTemplate(func: (id?: number, valueList?: Array<Entity>) => Promise<Entity> | Promise<Array<Entity>> | Promise<number> | undefined) {
         const connection = await CONNECTION_POOL.getConnection();
         try {
@@ -62,16 +39,10 @@ export abstract class PionRepository<Entity> {
         }
     }
 
-    abstract save(entity: Entity): Promise<Entity>;
-    abstract saveAll(): Promise<number>;
-    abstract findById(id: number): Promise<Entity>;
-    abstract findAll(): Promise<Array<Entity>>;
-    abstract updateById(id: number, valueList: Array<Entity>): Promise<Array<Entity>>;
-    abstract deleteById(id: number): Promise<number>;
-
-
-    abstract createTemplate();
-    abstract readTemplate();
-    abstract updateTemplate();
-
+    abstract save(entity: Entity, conn: PoolConnection): Promise<Entity>;
+    abstract saveAll(entityList: Array<Entity>, conn: PoolConnection): Promise<number>;
+    abstract findById(id: number, conn: PoolConnection): Promise<Entity | Entity[]>;
+    abstract findAll(conn: PoolConnection): Promise<Array<Entity>>;
+    abstract updateById(id: number, valueList: Array<Entity>, conn: PoolConnection): Promise<Array<Entity> | number>;
+    abstract deleteById(id: number, conn: PoolConnection): Promise<number>;
 }
