@@ -6,13 +6,13 @@ export interface VmResourceEntity {
 }
 
 export class VendingMachineResource {
-    _resourceId: number;
-    _vendingMachineId: number;
-    _amount: number;
+    resourceId: number;
+    vendingMachineId: number;
+    amount: number;
 
     constructor(resourceId: number, vendingMachineId: number, amount: number) {
-        this._resourceId = resourceId;
-        this._vendingMachineId = vendingMachineId;
-        this._amount = amount;
+        this.resourceId = resourceId;
+        this.vendingMachineId = vendingMachineId;
+        this.amount = amount;
     }
 }

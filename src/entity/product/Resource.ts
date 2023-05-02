@@ -1,10 +1,10 @@
+export class Resource {
 
-export interface ResourceEntity {
     id: number;
     name: string;
-}
 
+    constructor() {
 
-export class Resource {
+    }
 
 }
