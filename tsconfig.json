@@ -6,6 +6,7 @@
             "dom.iterable",
             "esnext"
         ],
+        "esModuleInterop": true,
         "allowJs": false, // 프로그램 일부중에 자바스크립트 확장자 파일을 허용
         "skipLibCheck": true, // 모든 .d.ts 파일에 대한 타입체크를 스킵
         "strictPropertyInitialization": false, // Check for class properties that are declared but not set in the constructor.
