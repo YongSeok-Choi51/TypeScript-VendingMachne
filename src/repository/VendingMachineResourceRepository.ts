@@ -1,23 +1,31 @@
-import { DefVMResource } from '../entity/machine/VendingMachine';
-import { VmResourceEntity } from '../entity/machine/VendingMachineResource';
+import { PoolConnection, ResultSetHeader } from 'mysql2/promise';
+import { VendingMachineResource } from '../entity/machine/VendingMachineResource';
 import { PionRepository } from './PionRepository';
 
 
-export class VendingMachineResourceRepository extends PionRepository {
+export class VendingMachineResourceRepository extends PionRepository<VendingMachineResource> {
 
     constructor() {
         super();
     }
 
-    async createTemplate(vmResourceList: Array<Array<number>>) {
+    save(entity: VendingMachineResource): Promise<VendingMachineResource> {
+        throw new Error('Method not implemented.');
+    }
+
+
+    async saveAll(entityArray: Array<VendingMachineResource>, conn: PoolConnection) {
         const createVmResourceQuery = `
             INSERT INTO
                 pixar.vending_machine_resource (vending_machine_id, resource_id, amount)
             VALUES ?`;
-        await this._connection.query({ sql: createVmResourceQuery }, [vmResourceList]);
+
+        const [rows, fields] = await conn.query({ sql: createVmResourceQuery }, [entityArray.map(e => [e.vendingMachineId, e.resourceId, e.amount])]);
+        return (rows as ResultSetHeader).affectedRows!;
     }
 
-    async readTemplate(vmId: number) {
+
+    async findById(id: number, conn: PoolConnection) {
         const selectVmResourceQuery = `
             SELECT 
                 r.id,
@@ -28,38 +36,62 @@ export class VendingMachineResourceRepository extends PionRepository {
             WHERE r.vending_machine_id=?
         `;
 
-        const [rows, field] = await this._connection.query({ sql: selectVmResourceQuery }, [vmId]);
-        return rows && (rows as Array<VmResourceEntity>).map(e => e);
+        const [rows, fields] = await conn.query({ sql: selectVmResourceQuery }, [id]);
+        return rows && (rows as Array<VendingMachineResource>).map(e => e);
     }
 
-    async updateTemplate(query: string) {
-
+    findAll(): Promise<VendingMachineResource[]> {
+        throw new Error('Method not implemented.');
     }
 
-    async deleteByVmId(vmId: number) {
+
+    async updateById(id: number, valueList: VendingMachineResource[], conn: PoolConnection) {
+
+        let rowCount: number = 0;
+        for (const vmResource of valueList) {
+            const query = `
+            UPDATE pixar.vending_machine_resource r
+            SET r.amount=?
+            WHERE r.vending_machine_id=?
+            AND r.resource_id=?
+            `;
+
+            const [rows, fields] = await conn.query({ sql: query }, [vmResource.amount, vmResource.vendingMachineId, vmResource.resourceId]);
+            const affectedRows = (rows as ResultSetHeader).affectedRows;
+            if (affectedRows === 0) {
+                throw new Error("vendingMachine resource update err");
+            } else {
+                rowCount += affectedRows;
+            }
+        }
+        return rowCount;
+    }
+
+    async deleteById(id: number, conn: PoolConnection) {
         const deleteVmResourceQuery = `
             DELETE FROM 
                 pixar.vending_machine_resource r 
             WHERE r.vending_machine_id=?`;
-        await this._connection.query({ sql: deleteVmResourceQuery }, [vmId]);
+        const [rows, fields] = await conn.query({ sql: deleteVmResourceQuery }, [id]);
+        return (rows as ResultSetHeader).affectedRows!;
     }
 
-    // 지우고 새것으로 insert
-    async onFinishTransaction(newResourceList: Array<VmResourceEntity>) {
-        await this.deleteByVmId(newResourceList[0].vendingMachineId);
-        const inputList = newResourceList.map(e => [e.vendingMachineId, e.resourceId, e.amount]);
-        await this.createTemplate(inputList);
-    }
+    // 특정 자판기가 가지는 자원중에서, 제품을 제작하는데 부족한 자원이 하나라도 있다면, productId 반환
+    // 해당 productId를 서버 어플리케이션에서 제품 전체목록중에 배제하는 후처리.
+    // O(n) -> O(1)복잡도로 개선 
+    async findUnAvailableProductsByVmId(vmId: number, conn: PoolConnection) {
+        const query = `
+            SELECT
+	            DISTINCT pr.product_id as productId
+            FROM pixar.vending_machine vm
+            INNER JOIN pixar.vending_machine_resource vm_r ON vm.id=vm_r.vending_machine_id
+            INNER JOIN pixar.product_resource pr ON pr.resource_id=vm_r.resource_id
+            WHERE vm.id=?
+            AND pr.amount > vm_r.amount;
+        `;
 
-    async initDefaultResource(defaultList: Array<DefVMResource>, vmId: number) {
-        const inputList = defaultList.map(e => [vmId, e.resourceId, e.amount]);
-        await this.createTemplate(inputList);
-        return await this.readTemplate(vmId);
-    }
-
-    async findByVmId(id: number) {
-
-
+        const [rows, fields] = await conn.query({ sql: query }, [vmId]);
+        return rows && rows as Array<{ productId: number; }>;
     }
 
 }

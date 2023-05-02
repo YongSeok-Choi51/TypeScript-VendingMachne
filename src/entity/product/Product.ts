@@ -1,19 +1,13 @@
-export interface ProductEntity {
+export abstract class Product {
+
     id: number;
     name: string;
     price: number;
-    isAvailable: boolean;
-}
 
-
-export abstract class Product {
-
-    _cup: number;
-    _water: number;
-
-    constructor(cup: number, water: number) {
-        this._cup = cup;
-        this._water = water;
+    constructor(id: number, name: string, price: number) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
     }
 
 }

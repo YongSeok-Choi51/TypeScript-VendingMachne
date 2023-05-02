@@ -1,29 +1,45 @@
-import { DefVMResource } from '../entity/machine/VendingMachine';
+import { PoolConnection } from 'mysql2/promise';
+import { DefaultVendingMachineResource } from '../entity/machine/DefaultVendingMachineResource';
 import { PionRepository } from './PionRepository';
 
 
-export class DefaultVendingMachineResourceRepository extends PionRepository {
+export class DefaultVendingMachineResourceRepository extends PionRepository<DefaultVendingMachineResource> {
+
+
     constructor() {
         super();
     }
 
-    async createTemplate(query: string) { };
+    save(entity: DefaultVendingMachineResource): Promise<DefaultVendingMachineResource> {
+        throw new Error('Method not implemented.');
+    }
 
-    async readTemplate() {
+    saveAll(): Promise<number> {
+        throw new Error('Method not implemented.');
+    }
+
+    findById(id: number): Promise<DefaultVendingMachineResource> {
+        throw new Error('Method not implemented.');
+    }
+
+    async findAll(conn: PoolConnection) {
         const selectDefResourceQuery = `
         SELECT
             def.resource_id as resourceId,
             def.amount
         FROM pixar.vending_machine_resource_default def;
         `;
+        const [rows, fields] = await conn.query({ sql: selectDefResourceQuery });
+        return rows && (rows as Array<DefaultVendingMachineResource>);
 
-        const [rows, field] = await this._connection.execute(selectDefResourceQuery);
-        return rows && (rows as Array<DefVMResource>).map(e => e);
-    };
+    }
 
-    async updateTemplate(query: string) {
+    updateById(id: number, valueList: DefaultVendingMachineResource[]): Promise<DefaultVendingMachineResource[]> {
+        throw new Error('Method not implemented.');
+    }
 
-    };
-
+    deleteById(id: number): Promise<number> {
+        throw new Error('Method not implemented.');
+    }
 
 } 

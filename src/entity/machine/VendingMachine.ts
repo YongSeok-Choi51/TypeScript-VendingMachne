@@ -1,48 +1,36 @@
-import { ProductEntity } from '../product/Product';
-import { VmResourceEntity } from './VendingMachineResource';
-
-export interface VendingMachineEntity {
-    id: number;
-    name: string;
-    vmResource?: Array<VmResourceEntity>;
-    menu?: Array<ProductEntity>;
-}
-
-export interface DefVMResource {
-    resourceId: number;
-    amount: number;
-}
+import { Product } from '../product/Product';
+import { VendingMachineResource } from './VendingMachineResource';
 
 export class VendingMachine {
 
-    _id: number;
-    _name: string;
-    _vmResource: Array<VmResourceEntity>;
-    _menuList: Array<ProductEntity>;
+    id: number;
+    name: string;
+    vmResource: Array<VendingMachineResource>;
+    menuList: Array<Product>;
 
     constructor(id: number, name: string) {
-        this._id = id;
-        this._name = name;
+        this.id = id;
+        this.name = name;
     }
 
-    set setVmResource(vmResource: Array<VmResourceEntity>) {
+    set setVmResource(vmResource: Array<VendingMachineResource>) {
         if (vmResource.length === 0) {
             console.log("invalid resource!");
             return;
         }
-        this._vmResource = vmResource;
+        this.vmResource = vmResource;
     }
 
-    set setMenuList(menuList: Array<ProductEntity>) {
+    set setMenuList(menuList: Array<Product>) {
         if (menuList.length === 0) {
             console.log("invalid menuList");
             return;
         }
-        this._menuList = menuList;
+        this.menuList = menuList;
     }
 
     findLowestPrice() {
-        return this._menuList.reduce((min, current) => {
+        return this.menuList.reduce((min, current) => {
             if (current.price < min.price) {
                 return current;
             } else {
