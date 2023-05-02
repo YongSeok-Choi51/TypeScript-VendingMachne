@@ -7,7 +7,7 @@ export enum PAYMENT_TYPE {
 
 export class Order {
 
-    id: number;
+    id: number | undefined;
     vendingMachineId: number;
     productId: number;
     paymentType: PAYMENT_TYPE;
@@ -18,7 +18,23 @@ export class Order {
     modifiedAt: Date | undefined;
     modifiedBy: number | undefined;
 
-    constructor() {
+    constructor(
+        vendingMachineId: number,
+        productId: number,
+        paymentType: PAYMENT_TYPE,
+        amount: number,
+        totalPrice: number,
+        createdAt: Date,
+        createdBy: number,
+        id?: number) {
 
+        this.vendingMachineId = vendingMachineId;
+        this.productId = productId;
+        this.paymentType = paymentType;
+        this.amount = amount;
+        this.totalPrice = totalPrice;
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
+        this.id = id;
     }
 }
